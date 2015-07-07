@@ -3,6 +3,8 @@
 [go-monitor](https://github.com/mcuadros/go-monitor). It supports
 custom aspects and implements a simple counter aspect in the package ginmon.
 
+[![Build Status](https://travis-ci.org/zalando-techmonkeys/gin-gomonitor.svg?branch=master)](https://travis-ci.org/zalando-techmonkeys/gin-gomonitor)
+
 ## Usage
 ### Example
 
