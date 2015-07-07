@@ -1,14 +1,12 @@
 language: go
-sudo: false
 go:
   - 1.4
   - 1.4.2
   - tip
-
-script:
-  - go get golang.org/x/tools/cmd/cover
+before_install:
+  - go get github.com/axw/gocov/gocov
   - go get github.com/mattn/goveralls
-  - go test -v -covermode=count -coverprofile=coverage.out
+  - if ! go get code.google.com/p/go.tools/cmd/cover; then go get golang.org/x/tools/cmd/cover; fi
+script:
+    - $HOME/gopath/bin/goveralls -service=travis-ci
 
-after_success:
-  - goveralls -coverprofile=coverage.out -service=travis-ci
