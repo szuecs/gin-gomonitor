@@ -65,7 +65,7 @@ func main() {
 ## Development
 * Issues: Just create issues on github
 * Enhancements/Bugfixes: Pull requests are welcome
-* get in contact: mailto:team-techmonkeys@zalando.de
+* get in contact: team-techmonkeys@zalando.de
 * see [MAINTAINERS](https://github.com/zalando-techmonkeys/gin-gomonitor/blob/master/MAINTAINERS)
 file.
 
