@@ -48,7 +48,7 @@ import (
 )
 
 // Metrics function exposes metrics of
-// https://github.com/gopkg.in/mcuadros/go-monitor.v1 package of your
+// https://github.com/mcuadros/go-monitor package of your
 // https://github.com/gin-gonic/gin based webapp. Metrics() get a
 // port number as parameter to expose monitoring data to and a slice
 // of aspects.Aspect defined by the user.
