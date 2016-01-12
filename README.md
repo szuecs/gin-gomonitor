@@ -4,7 +4,7 @@
 custom aspects and implements a simple counter aspect in the package ginmon.
 
 [![Build Status](https://travis-ci.org/zalando-techmonkeys/gin-gomonitor.svg?branch=master)](https://travis-ci.org/zalando-techmonkeys/gin-gomonitor)
-[![Coverage Status](https://coveralls.io/repos/zalando-techmonkeys/gin-gomonitor/badge.svg?branch=master&service=github)](https://coveralls.io/github/zalando-techmonkeys/gin-gomonitor?branch=master)
+[![Coverage Status](https://coveralls.io/repos/zalando-techmonkeys/gin-gomonitor/badge.svg?branch=master&service=github)](https://coveralls.io/github/zalando-techmonkeys/gin-gomonitor?branch=master) [![Go Report Card](http://goreportcard.com/badge/zalando-techmonkeys/gin-gomonitor)](http://goreportcard.com/report/zalando-techmonkeys/gin-gomonitor)
 
 ## Usage
 ### Example
