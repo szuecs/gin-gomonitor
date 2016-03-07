@@ -175,7 +175,7 @@ ideas or bugreports.
 
 ## Contact
 
-* E-Mail: mailto:team-techmonkeys@zalando.de
+* E-Mail: team-techmonkeys@zalando.de
 * IRC on freenode: #zalando-techmonkeys
 
 ## Contributors
