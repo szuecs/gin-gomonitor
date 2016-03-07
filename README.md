@@ -16,7 +16,7 @@ When it comes to choosing a Go framework, there's a lot of confusion
 about what to use. The scene is very fragmented, and detailed
 comparisons of different frameworks are still somewhat rare. Meantime,
 how to handle dependencies and structure projects are big topics in
-the Golang community. We've liked using Gin for its speed,
+the Go community. We've liked using Gin for its speed,
 accessibility, and usefulness in developing microservice
 architectures. In creating Gin-Gomonitor, we wanted to take fuller
 advantage of [Gin](https://github.com/gin-gonic/gin)'s capabilities
