@@ -1,8 +1,8 @@
 # Gin-Gomonitor
 
-[![Build Status](https://travis-ci.org/zalando-techmonkeys/gin-gomonitor.svg?branch=master)](https://travis-ci.org/zalando-techmonkeys/gin-gomonitor)
-[![Coverage Status](https://coveralls.io/repos/zalando-techmonkeys/gin-gomonitor/badge.svg?branch=master&service=github)](https://coveralls.io/github/zalando-techmonkeys/gin-gomonitor?branch=master)
-[![Go Report Card](https://goreportcard.com/badge/zalando-techmonkeys/gin-gomonitor)](https://goreportcard.com/report/zalando-techmonkeys/gin-gomonitor)
+[![Build Status](https://travis-ci.org/zalando/gin-gomonitor.svg?branch=master)](https://travis-ci.org/zalando/gin-gomonitor)
+[![Coverage Status](https://coveralls.io/repos/zalando/gin-gomonitor/badge.svg?branch=master&service=github)](https://coveralls.io/github/zalando/gin-gomonitor?branch=master)
+[![Go Report Card](https://goreportcard.com/badge/zalando/gin-gomonitor)](https://goreportcard.com/report/zalando/gin-gomonitor)
 
 Gin-Gomonitor is made specially for [Gin Framework](https://github.com/gin-gonic/gin) users who also want to use [Go-Monitor](https://github.com/mcuadros/go-monitor). It was created by Go developers who needed Gin middleware for exposing metrics with Go-Monitor, which provides a simple and extensible way to build monitorizable long-term execution processes or daemons via HTTP. Gin-Gomonitor supports customized aspects and implements a simple counter aspect within the
 package ginmon.
@@ -28,11 +28,11 @@ Gin-Gomonitor uses the following [Go](https://golang.org/) packages as dependenc
 
 Assuming you've installed Go and Gin, run this:
 
-    go get github.com/zalando-techmonkeys/gin-gomonitor
+    go get github.com/zalando/gin-gomonitor
 
 ## Usage
 
-[This example](https://github.com/zalando-techmonkeys/gin-gomonitor/blob/master/example/main.go) shows you how to use Gin-Gomonitor. To try it out, use:
+[This example](https://github.com/zalando/gin-gomonitor/blob/master/example/main.go) shows you how to use Gin-Gomonitor. To try it out, use:
 
       go run example/main.go
 

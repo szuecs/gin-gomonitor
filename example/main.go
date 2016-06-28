@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/zalando-techmonkeys/gin-gomonitor"
-	"github.com/zalando-techmonkeys/gin-gomonitor/aspects"
+	"github.com/zalando/gin-gomonitor"
+	"github.com/zalando/gin-gomonitor/aspects"
 	"gopkg.in/mcuadros/go-monitor.v1/aspects"
 )
 
