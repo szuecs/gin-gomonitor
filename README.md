@@ -1,14 +1,15 @@
 # Gin-Gomonitor
 
 [![Build Status](https://travis-ci.org/zalando-techmonkeys/gin-gomonitor.svg?branch=master)](https://travis-ci.org/zalando-techmonkeys/gin-gomonitor)
-[![Coverage Status](https://coveralls.io/repos/zalando-techmonkeys/gin-gomonitor/badge.svg?branch=master&service=github)](https://coveralls.io/github/zalando-techmonkeys/gin-gomonitor?branch=master) [![Go Report Card](http://goreportcard.com/badge/zalando-techmonkeys/gin-gomonitor)](http://goreportcard.com/report/zalando-techmonkeys/gin-gomonitor)
+[![Coverage Status](https://coveralls.io/repos/zalando-techmonkeys/gin-gomonitor/badge.svg?branch=master&service=github)](https://coveralls.io/github/zalando-techmonkeys/gin-gomonitor?branch=master)
+[![Go Report Card](https://goreportcard.com/badge/zalando-techmonkeys/gin-gomonitor)](https://goreportcard.com/report/zalando-techmonkeys/gin-gomonitor)
 
 Gin-Gomonitor is made specially for [Gin Framework](https://github.com/gin-gonic/gin) users who also want to use [Go-Monitor](https://github.com/mcuadros/go-monitor). It was created by Go developers who needed Gin middleware for exposing metrics with Go-Monitor, which provides a simple and extensible way to build monitorizable long-term execution processes or daemons via HTTP. Gin-Gomonitor supports customized aspects and implements a simple counter aspect within the
 package ginmon.
 
 ## Project Context and Features
 
-When it comes to choosing a Go framework, there's a lot of confusion about what to use. The scene is very fragmented, and detailed comparisons of different frameworks are still somewhat rare. Meantime, how to handle dependencies and structure projects are big topics in the Go community. 
+When it comes to choosing a Go framework, there's a lot of confusion about what to use. The scene is very fragmented, and detailed comparisons of different frameworks are still somewhat rare. Meantime, how to handle dependencies and structure projects are big topics in the Go community.
 
 We've liked using Gin for its speed, accessibility, and usefulness in developing microservice architectures. In creating Gin-Gomonitor, we wanted to take fuller advantage of [Gin](https://github.com/gin-gonic/gin)'s capabilities and help other devs do likewise.
 
