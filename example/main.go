@@ -29,7 +29,13 @@ func main() {
 
 	// each request to all handlers like below will increment the Counter
 	router.GET("/", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, gin.H{"title": "Counter - Hello World - Loook at http://localhost:9000/Counter"})
+		ctx.JSON(http.StatusOK, gin.H{
+			"Counter": map[string]string{
+				"msg": "Request Counter - Loook at http://localhost:9000/Counter",
+				"cmd": "curl http://localhost:9000/Counter; for i in {1..20}; do curl localhost:8080/; done; curl http://localhost:9000/Counter"},
+			"RequestTime": map[string]string{
+				"msg": "RequestTime is registered at http://localhost:9000/RequestTime and will return data after 5 seconds.",
+				"cmd": "for j in {0..100}; do for i in {1..20}; do curl localhost:8080/ ; done; sleep 0.5; curl localhost:9000/RequestTime ; done"}})
 	})
 
 	log.Fatal(router.Run(":8080"))
