@@ -8,17 +8,18 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// RequestTimeAspect, exported fields are used to store json fields.
+// RequestTimeAspect, exported fields are used to store json
+// fields. All fields are measured in nanoseconds.
 type RequestTimeAspect struct {
 	lastMinuteRequestTimes []float64
-	Min                    float64
-	Max                    float64
-	Mean                   float64
-	Stdev                  float64
-	P90                    float64
-	P95                    float64
-	P99                    float64
-	Timestamp              time.Time
+	Min                    float64   `json:"min"`
+	Max                    float64   `json:"max"`
+	Mean                   float64   `json:"mean"`
+	Stdev                  float64   `json:"stdev"`
+	P90                    float64   `json:"p90"`
+	P95                    float64   `json:"p95"`
+	P99                    float64   `json:"p99"`
+	Timestamp              time.Time `json:"timestamp"`
 }
 
 // NewRequestTimeAspect returns a new initialized RequestTimeAspect
