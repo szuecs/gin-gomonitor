@@ -1,11 +1,12 @@
 package ginmon
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/gin-gonic/gin"
+	"github.com/stretchr/testify/assert"
 )
 
 const TestMode string = "test"
@@ -14,7 +15,7 @@ const checkMark = "\u2713"
 const ballotX = "\u2717"
 
 func Test_Inc(t *testing.T) {
-	c := CounterAspect{1}
+	c := &CounterAspect{1}
 	expect := 2
 	c.Inc()
 	if assert.Equal(t, c.Count, expect, "Incrementation of counter does not work, expect %d but got %d %s",

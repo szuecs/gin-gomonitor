@@ -2,7 +2,8 @@ package ginmon
 
 import "github.com/gin-gonic/gin"
 
-// middleware
+// CounterHandler is a Gin middleware function that increments a
+// global counter on each request.
 func CounterHandler(counter *CounterAspect) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		counter.Inc()
@@ -10,6 +11,7 @@ func CounterHandler(counter *CounterAspect) gin.HandlerFunc {
 	}
 }
 
+// CounterAspect stores a counter
 type CounterAspect struct {
 	Count int
 }
