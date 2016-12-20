@@ -1,7 +1,9 @@
 package main
 
 import (
+	"log"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/zalando/gin-gomonitor"
@@ -10,11 +12,16 @@ import (
 )
 
 func main() {
+	requestAspect := ginmon.NewRequestTimeAspect()
+	requestAspect.StartTimer(5 * time.Second)
+
 	counterAspect := &ginmon.CounterAspect{0}
-	asps := []aspects.Aspect{counterAspect}
+	asps := []aspects.Aspect{counterAspect, requestAspect}
 	router := gin.New()
 	// curl http://localhost:9000/Counter
 	router.Use(ginmon.CounterHandler(counterAspect))
+	// curl http://localhost:9000/RequestTime
+	router.Use(ginmon.RequestTimeHandler(requestAspect))
 	// curl http://localhost:9000/
 	router.Use(gomonitor.Metrics(9000, asps))
 	// last middleware
@@ -25,6 +32,5 @@ func main() {
 		ctx.JSON(http.StatusOK, gin.H{"title": "Counter - Hello World - Loook at http://localhost:9000/Counter"})
 	})
 
-	//..
-	router.Run(":8080")
+	log.Fatal(router.Run(":8080"))
 }
