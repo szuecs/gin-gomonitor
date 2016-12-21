@@ -102,7 +102,7 @@ The page's counter metric will increment if you hit the page:
             "request_codes_per_minute": {}
         }
     }
-    % for i in {1..20}; do curl localhost:8080/ &>/dev/null ; curl localhost:8080/foo &>/dev/null ; done; sleep 1; curl http://localhost:9000/Counter
+    % for i in {1..20}; do curl localhost:8080/ &>/dev/null ; curl localhost:8080/foo &>/dev/null ; done; sleep 3; curl http://localhost:9000/Counter
     {
         "Counter": {
             "request_sum_per_minute": 40,

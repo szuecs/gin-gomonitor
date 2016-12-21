@@ -16,7 +16,7 @@ func main() {
 	requestAspect.StartTimer(5 * time.Second)
 
 	counterAspect := ginmon.NewCounterAspect()
-	counterAspect.StartTimer(1 * time.Second)
+	counterAspect.StartTimer(3 * time.Second)
 
 	asps := []aspects.Aspect{counterAspect, requestAspect}
 
@@ -35,7 +35,7 @@ func main() {
 		ctx.JSON(http.StatusOK, gin.H{
 			"Counter": map[string]string{
 				"msg": "Request Counter - Loook at http://localhost:9000/Counter",
-				"cmd": "curl http://localhost:9000/Counter ; for i in {1..20}; do curl localhost:8080/ &>/dev/null ; curl localhost:8080/foo &>/dev/null ; done; sleep 1; curl http://localhost:9000/Counter"},
+				"cmd": "curl http://localhost:9000/Counter ; for i in {1..20}; do curl localhost:8080/ &>/dev/null ; curl localhost:8080/foo &>/dev/null ; done; sleep 3; curl http://localhost:9000/Counter"},
 			"RequestTime": map[string]string{
 				"msg": "RequestTime is registered at http://localhost:9000/RequestTime and will return data after 5 seconds.",
 				"cmd": "for j in {0..100}; do for i in {1..20}; do curl localhost:8080/ ; done; sleep 0.5; curl localhost:9000/RequestTime ; done"}})

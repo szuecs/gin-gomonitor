@@ -10,14 +10,22 @@ import (
 // global counter on each request.
 func CounterHandler(ca *CounterAspect) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		ca.Inc(ctx)
 		ctx.Next()
-		ca.IncCodes(ctx)
+		ca.inc <- tuple{
+			path: ctx.Request.URL.Path,
+			code: ctx.Writer.Status(),
+		}
 	}
+}
+
+type tuple struct {
+	path string
+	code int
 }
 
 // CounterAspect stores a counter
 type CounterAspect struct {
+	inc                  chan tuple
 	internalRequestsSum  int
 	internalRequests     map[string]int
 	internalRequestCodes map[int]int
@@ -29,6 +37,7 @@ type CounterAspect struct {
 // NewCounterAspect returns a new initialized CounterAspect object.
 func NewCounterAspect() *CounterAspect {
 	ca := &CounterAspect{}
+	ca.inc = make(chan tuple)
 	ca.internalRequestsSum = 0
 	ca.internalRequests = make(map[string]int, 0)
 	ca.internalRequestCodes = make(map[int]int, 0)
@@ -44,23 +53,18 @@ func (ca *CounterAspect) StartTimer(d time.Duration) {
 	timer := time.Tick(d)
 	go func() {
 		for {
+			tup := <-ca.inc
+			ca.internalRequestsSum++
+			ca.internalRequests[tup.path]++
+			ca.internalRequestCodes[tup.code]++
+		}
+	}()
+	go func() {
+		for {
 			<-timer
 			ca.reset()
 		}
 	}()
-}
-
-// Inc will increment internal counters that are not exposed. Counters
-// will be exposed if you call reset().
-func (ca *CounterAspect) Inc(ctx *gin.Context) {
-	ca.internalRequestsSum++
-	ca.internalRequests[ctx.Request.URL.Path]++
-}
-
-// IncCodes will increment internal counters that are not
-// exposed. Counters will be exposed if you call reset().
-func (ca *CounterAspect) IncCodes(ctx *gin.Context) {
-	ca.internalRequestCodes[ctx.Writer.Status()]++
 }
 
 // GetStats to fulfill aspects.Aspect interface, it returns the data
