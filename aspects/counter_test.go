@@ -46,7 +46,7 @@ func Test_Inc(t *testing.T) {
 
 func Test_GetStats(t *testing.T) {
 	ca := NewCounterAspect()
-	ca.StartTimer(1 * time.Second)
+	ca.StartTimer(10 * time.Second)
 	if assert.NotNil(t, ca.GetStats(), "Return of Getstats() should not be nil") {
 		t.Logf("Should be an interface %s", checkMark)
 	}
