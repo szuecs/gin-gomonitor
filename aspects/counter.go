@@ -53,16 +53,16 @@ func (ca *CounterAspect) StartTimer(d time.Duration) {
 	timer := time.Tick(d)
 	go func() {
 		for {
-			tup := <-ca.inc
-			ca.internalRequestsSum++
-			ca.internalRequests[tup.path]++
-			ca.internalRequestCodes[tup.code]++
-		}
-	}()
-	go func() {
-		for {
-			<-timer
-			ca.reset()
+			select {
+			case tup := <-ca.inc:
+
+				ca.internalRequestsSum++
+				ca.internalRequests[tup.path]++
+				ca.internalRequestCodes[tup.code]++
+
+			case <-timer:
+				ca.reset()
+			}
 		}
 	}()
 }
