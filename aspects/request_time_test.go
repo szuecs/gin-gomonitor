@@ -44,7 +44,7 @@ func TestRequestTimer_GetStats(t *testing.T) {
 	if assert.InEpsilon(t, 99, stat.Max, epsilon, "Return of getstats should have a Max") {
 		t.Logf("Should be 99 %s", checkMark)
 	}
-	if assert.Equal(t, 0, stat.Min, "Return of getstats should have a Min") {
+	if assert.Equal(t, float64(0), stat.Min, "Return of getstats should have a Min") {
 		t.Logf("Should be 0 %s", checkMark)
 	}
 	if assert.InEpsilon(t, 50, stat.Mean, 0.5, "Return of getstats should have a Mean") {
