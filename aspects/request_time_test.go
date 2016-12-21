@@ -83,14 +83,3 @@ func TestRequestTimer_InRoot(t *testing.T) {
 			expect, rt.InRoot(), checkMark)
 	}
 }
-
-// func Test_RequestTimerHandler(t *testing.T) {
-// 	gin.SetMode(TestMode)
-// 	router := gin.New()
-// 	aspect := ginmon.newTestNewRequestTimeAspect(1.0, 2.0, 3.0)
-// 	router.Use(ginmon.RequestTimeHandler(aspect))
-// 	tryRequest(router, "GET", "/")
-// 	if assert.Equal(t, cnt.Count, 2, "Incrementation of counter does not work, expect %d but got %d %s", 2, cnt.Count, ballotX) {
-// 		t.Logf("RequestTimeHandler works, expect %d and got %d %s", 2, cnt.Count, checkMark)
-// 	}
-// }
