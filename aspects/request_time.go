@@ -96,7 +96,12 @@ func (rt *RequestTimeAspect) calculate() {
 }
 
 func mean(orderedObservations []float64, l int) float64 {
-	return percentile(orderedObservations, l, 0.5)
+	res := 0.0
+	for i := 0; i < l; i++ {
+		res += orderedObservations[i]
+	}
+
+	return res / float64(l)
 }
 
 func p90(orderedObservations []float64, l int) float64 {
