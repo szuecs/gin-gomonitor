@@ -13,9 +13,22 @@ When it comes to choosing a Go framework, there's a lot of confusion about what 
 
 We've liked using Gin for its speed, accessibility, and usefulness in developing microservice architectures. In creating Gin-Gomonitor, we wanted to take fuller advantage of [Gin](https://github.com/gin-gonic/gin)'s capabilities and help other devs do likewise.
 
+We implemented the following custom
+[Aspects](https://github.com/zalando/gin-gomonitor/tree/master/aspects):
+
+CounterAspect implements a counter for request per time.Duration,
+counting the sum of all and for each path independent counters.
+
+RequestTimeAspect implements the measurement of request times
+including values for min, max, mean, stdev, p90, p95, p99.
+
+See also our [full example](https://github.com/zalando/gin-gomonitor/blob/master/example/main.go).
+
 #### How Go-Monitor Is Different from Other Metric Libraries
 
-Go-Monitor is easily extendable, does not need type casts to create JSON, and has useful metrics already defined. It exposes metrics as JSON to a metrics endpoint using a different TCP port.
+Go-Monitor is easily extendable, does not need type casts to create
+JSON, and has useful metrics already defined. It exposes metrics as
+JSON to a metrics endpoint using a different TCP port.
 
 ## Requirements
 
@@ -63,7 +76,9 @@ Next, initialize the CounterAspect defined by Gin-Gomonitor and your own CustomA
 ```go
     router := gin.New()
 
-    counterAspect := &ginmon.CounterAspect{0}
+    counterAspect := ginmon.NewCounterAspect()
+    counterAspect.StartTimer(1 * time.Minute)
+
     anotherAspect := &CustomAspect{3}
     asps := []aspects.Aspect{counterAspect, anotherAspect}
     router.Use(ginmon.CounterHandler(counterAspect))
@@ -81,22 +96,32 @@ The page's counter metric will increment if you hit the page:
 
     % curl http://localhost:9000/Counter
     {
-      "Counter": 0
+        "Counter": {
+            "request_sum_per_minute": 0,
+            "requests_per_minute": {},
+            "request_codes_per_minute": {}
+        }
     }
-    % curl http://localhost:8080/
-    {"title":"Counter - Hello World - Loook at http://localhost:9000/Counter"}
-    % curl http://localhost:8080/
-    {"title":"Counter - Hello World - Loook at http://localhost:9000/Counter"}
-    % curl http://localhost:9000/Counter
+    % for i in {1..20}; do curl localhost:8080/ &>/dev/null ; curl localhost:8080/foo &>/dev/null ; done; sleep 3; curl http://localhost:9000/Counter
     {
-      "Counter": 2
+        "Counter": {
+            "request_sum_per_minute": 40,
+            "requests_per_minute": {
+                "/": 20,
+                "/foo": 20
+            },
+            "request_codes_per_minute": {
+                "200": 20,
+                "404": 20
+            }
+        }
     }
 
 The page custom metric will show three as defined:
 
-    % curl http://localhost:9000/Counter
+    % curl http://localhost:9000/Custom
     {
-      "Counter": 0
+      "Custom: 3
     }
 
 The regular metrics from go-monitor exposes Go process and build information:
