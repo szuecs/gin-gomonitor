@@ -9,9 +9,17 @@ package ginmon.
 
 ## Project Context and Features
 
-When it comes to choosing a Go framework, there's a lot of confusion about what to use. The scene is very fragmented, and detailed comparisons of different frameworks are still somewhat rare. Meantime, how to handle dependencies and structure projects are big topics in the Go community.
+When it comes to choosing a Go framework, there's a lot of confusion
+about what to use. The scene is very fragmented, and detailed
+comparisons of different frameworks are still somewhat rare. Meantime,
+how to handle dependencies and structure projects are big topics in
+the Go community.
 
-We've liked using Gin for its speed, accessibility, and usefulness in developing microservice architectures. In creating Gin-Gomonitor, we wanted to take fuller advantage of [Gin](https://github.com/gin-gonic/gin)'s capabilities and help other devs do likewise.
+We've liked using Gin for its speed, accessibility, and usefulness in
+developing microservice architectures. In creating Gin-Gomonitor, we
+wanted to take fuller advantage of
+[Gin](https://github.com/gin-gonic/gin)'s capabilities and help other
+devs do likewise.
 
 We implemented the following custom
 [Aspects](https://github.com/zalando/gin-gomonitor/tree/master/aspects):
@@ -21,6 +29,11 @@ counting the sum of all and for each path independent counters.
 
 RequestTimeAspect implements the measurement of request times
 including values for min, max, mean, stdev, p90, p95, p99.
+
+GenericChannelAspect implements a generic method to send key value
+pairs to this monitoring facility. This aspect will calculate min,
+max, mean, stdev, p90, p95, p99 for all values of a key send to the
+channel in a given time frame. It can be used without Gin if you like.
 
 See also our [full example](https://github.com/zalando/gin-gomonitor/blob/master/example/main.go).
 
@@ -39,15 +52,16 @@ Gin-Gomonitor uses the following [Go](https://golang.org/) packages as dependenc
 
 ## Installation
 
-Assuming you've installed Go and Gin, run this:
+Assuming you've installed [Go](https://golang.org/dl) and
+[Gin](https://github.com/gin-gonic/gin), run this:
 
-    go get github.com/zalando/gin-gomonitor
+    % go get -u github.com/zalando/gin-gomonitor
 
 ## Usage
 
 [This example](https://github.com/zalando/gin-gomonitor/blob/master/example/main.go) shows you how to use Gin-Gomonitor. To try it out, use:
 
-      go run example/main.go
+      % go run example/main.go
 
 ### Default Monitor with Custom Aspect
 
@@ -167,13 +181,130 @@ You can also filter by sub-category:
       }
     }
 
+### RequestTimeAspect
+
+RequestTimeAspect measures processing time in the middleware
+chain. The request will start in the outermost middleware, in this
+example it is the RequestTimeHandler. The request will be passed through all
+other middleware handlers and at last to your router endpoint. Your
+response from your handler will be passed again to all middleware
+handlers. RequestTimeAspect will save all measured time.Duration in a
+slice and calculate the next metrics with it each timeDuration you
+configured with the parameter to StartTimer(d time.Duration). The
+metrics endpoint is configured to be
+http://localhost:9000/RequestTime, which will be calculated in this
+example code every 5 seconds:
+
+```go
+func main() {
+        // initialize RequestTimeAspect and calculate every 5 seconds
+	requestAspect := ginmon.NewRequestTimeAspect()
+	requestAspect.StartTimer(5 * time.Second)
+	asps := []aspects.Aspect{requestAspect}
+
+	router := gin.New()
+        // register RequestTimeAspect middleware
+	// test: curl http://localhost:9000/RequestTime
+	router.Use(ginmon.RequestTimeHandler(requestAspect))
+	// start metrics endpoint
+	router.Use(gomonitor.Metrics(9000, asps))
+	// last middleware
+	router.Use(gin.Recovery())
+
+	router.GET("/", func(ctx *gin.Context) {
+		ctx.JSON(http.StatusOK, gin.H{ "hello": "world"})
+	})
+
+	log.Fatal(router.Run(":8080"))
+}
+```
+
+RequestTimeAspect will calculate min, max, mean, standard deviation,
+P90, P95, P99 of all measured time.Duration for all your endpoints in
+this router group. It also creates a time stamp, such that you
+know when the calculation happened.
+
+```bash
+% for i in {1..20}; do curl localhost:8080/ &>/dev/null; done; sleep 5; curl localhost:9000/RequestTime
+{
+  "RequestTime": {
+    "min": 47098,
+    "max": 94502,
+    "mean": 62199.75,
+    "stdev": 13823.2430381624,
+    "p90": 91248,
+    "p95": 94502,
+    "p99": 94502,
+    "timestamp": "2017-01-22T19:59:48.164355177+01:00"
+  }
+}
+```
+
+### GenericChannelAspect
+
+GenericChannelAspect enables you to send arbitrary ginmon.DataChannel
+through a channel to gin-gomonitor, which will calculate min, max,
+mean, standard deviation, P90, P95, P99 grouped by
+ginmon.DataChannel.Name for every every configured time.Duration. The
+metrics endpoint is configured to be http://localhost:9000/generic,
+which will be calculated in this example code every 3 seconds:
+
+```go
+func main() {
+        // initialize GenericChannelAspect and calculate every 3 seconds
+	genericAspect := ginmon.NewGenericChannelAspect("generic")
+	genericAspect.StartTimer(3 * time.Second)
+	genericCH := genericAspect.SetupGenericChannelAspect()
+	asps := []aspects.Aspect{genericAspect}
+
+	router := gin.New()
+        // register GenericChannelAspect middleware
+	// test: curl http://localhost:9000/generic
+	// start metrics endpoint
+	router.Use(gomonitor.Metrics(9000, asps))
+	// catch panics as last middleware
+	router.Use(gin.Recovery())
+
+	i := 0
+	go func() {
+		for {
+			i++
+			genericCH <- ginmon.DataChannel{Name: "foo", Value: float64(i)}
+		}
+	}()
+
+	router.Run(":8080"))
+}
+```
+
+```bash
+% curl http://localhost:9000/generic
+{
+  "generic": {
+    "foo": {
+      "min": 1,
+      "max": 8.15993e+06,
+      "mean": 4.0799655e+06,
+      "stdev": 2.355569035371972e+06,
+      "p90": 7.343938e+06,
+      "p95": 7.751934e+06,
+      "p99": 8.078331e+06,
+      "timestamp": "2017-01-22T21:28:45.610762301+01:00"
+    }
+  }
+}
+```
+
 ## Contributing/TODO
 
-We welcome contributions from the community—just submit a pull request. To help you get started, here are some items that we'd love help with:
+We welcome contributions from the community—just submit a pull
+request. To help you get started, here are some items that we'd love
+help with:
 
 - Adding more custom metrics
-  - time per request: average, p99, ..
+  - time per request per all, path, httpverb
   - number of requests: all, path, httpverb
+  - add more tests
   - &lt;your idea&gt;
 - the code base
 
@@ -181,8 +312,7 @@ Please use GitHub issues as your starting point for contributions, new ideas or 
 
 ## Contact
 
-* E-Mail: team-techmonkeys@zalando.de
-* IRC on freenode: #zalando-techmonkeys
+* E-Mail: [MAINTAINERS](MAINTAINERS)
 
 ## Contributors
 
