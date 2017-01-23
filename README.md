@@ -383,6 +383,7 @@ help with:
   - number of requests: httpverb
   - review and maybe refactor lock usage in generic_channel.go
   - reduce goroutine usage: We could use one goroutine for all myAspect.StartTimer()
+  - add logging and enable user to choose logging, see [Dave Cheney's post](https://dave.cheney.net/2017/01/23/the-package-level-logger-anti-pattern)
   - &lt;your idea&gt;
 - the code base
 
