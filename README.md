@@ -181,6 +181,64 @@ You can also filter by sub-category:
       }
     }
 
+### CounterAspect
+
+CounterAspect measures requests per configured time.Duration.  It
+shows requests as sum, per path and per HTTP code, such that you can
+monitor increasing user traffic, changing access patterns of user
+traffic and http errors.
+
+```go
+func main() {
+        // initialize CounterAspect and reset every minute
+        counterAspect := ginmon.NewCounterAspect()
+        counterAspect.StartTimer(1 * time.Minute)
+
+        asps := []aspects.Aspect{counterAspect}
+	router := gin.New()
+        // register CounterAspect middleware
+	// test: curl http://localhost:9000/Counter
+        router.Use(ginmon.CounterHandler(counterAspect))
+
+	// start metrics endpoint
+	router.Use(gomonitor.Metrics(9000, asps))
+	// last middleware
+	router.Use(gin.Recovery())
+
+	router.GET("/", func(ctx *gin.Context) {
+		ctx.JSON(http.StatusOK, gin.H{ "hello": "world"})
+	})
+
+	log.Fatal(router.Run(":8080"))
+}
+```
+
+The page's counter metric will increment if you hit the page:
+
+    % curl http://localhost:9000/Counter
+    {
+        "Counter": {
+            "request_sum_per_minute": 0,
+            "requests_per_minute": {},
+            "request_codes_per_minute": {}
+        }
+    }
+    % for i in {1..20}; do curl localhost:8080/ &>/dev/null ; curl localhost:8080/foo &>/dev/null ; done; sleep 3; curl http://localhost:9000/Counter
+    {
+        "Counter": {
+            "request_sum_per_minute": 40,
+            "requests_per_minute": {
+                "/": 20,
+                "/foo": 20
+            },
+            "request_codes_per_minute": {
+                "200": 20,
+                "404": 20
+            }
+        }
+    }
+
+
 ### RequestTimeAspect
 
 RequestTimeAspect measures processing time in the middleware
@@ -243,8 +301,8 @@ know when the calculation happened.
 ### GenericChannelAspect
 
 GenericChannelAspect enables you to send arbitrary ginmon.DataChannel
-through a channel to gin-gomonitor, which will calculate min, max,
-mean, standard deviation, P90, P95, P99 grouped by
+data through a channel to gin-gomonitor, which will calculate min,
+max, mean, standard deviation, P90, P95, P99 grouped by
 ginmon.DataChannel.Name for every every configured time.Duration. The
 metrics endpoint is configured to be http://localhost:9000/generic,
 which will be calculated in this example code every 3 seconds:
@@ -265,11 +323,19 @@ func main() {
 	// catch panics as last middleware
 	router.Use(gin.Recovery())
 
+        // send a lot of data concurrently to the monitoring data channel
 	i := 0
 	go func() {
 		for {
 			i++
 			genericCH <- ginmon.DataChannel{Name: "foo", Value: float64(i)}
+		}
+	}()
+	j := 0
+	go func() {
+		for {
+			j++
+			genericCH <- ginmon.DataChannel{Name: "bar", Value: float64(j % 5)}
 		}
 	}()
 
@@ -281,15 +347,25 @@ func main() {
 % curl http://localhost:9000/generic
 {
   "generic": {
+    "bar": {
+      "min": 0,
+      "max": 4,
+      "mean": 2,
+      "stdev": 1.4142132553447464,
+      "p90": 4,
+      "p95": 4,
+      "p99": 4,
+      "timestamp": "2017-01-23T12:41:06.247844877+01:00"
+    },
     "foo": {
-      "min": 1,
-      "max": 8.15993e+06,
-      "mean": 4.0799655e+06,
-      "stdev": 2.355569035371972e+06,
-      "p90": 7.343938e+06,
-      "p95": 7.751934e+06,
-      "p99": 8.078331e+06,
-      "timestamp": "2017-01-22T21:28:45.610762301+01:00"
+      "min": 4.6359997e+07,
+      "max": 4.8663064e+07,
+      "mean": 4.75115305e+07,
+      "stdev": 664838.6092191178,
+      "p90": 4.8432758e+07,
+      "p95": 4.8547911e+07,
+      "p99": 4.8640034e+07,
+      "timestamp": "2017-01-23T12:41:06.088119271+01:00"
     }
   }
 }
@@ -302,9 +378,11 @@ request. To help you get started, here are some items that we'd love
 help with:
 
 - Adding more custom metrics
-  - time per request per all, path, httpverb
-  - number of requests: all, path, httpverb
   - add more tests
+  - time per request: path, httpverb
+  - number of requests: httpverb
+  - review and maybe refactor lock usage in generic_channel.go
+  - reduce goroutine usage: We could use one goroutine for all myAspect.StartTimer()
   - &lt;your idea&gt;
 - the code base
 

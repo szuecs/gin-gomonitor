@@ -1,7 +1,10 @@
 package ginmon
 
 import (
+	"bytes"
+	"encoding/gob"
 	"sort"
+	"sync"
 	"time"
 )
 
@@ -12,12 +15,38 @@ type DataChannel struct {
 	Value float64
 }
 
+type dataStore struct {
+	sync.RWMutex
+	data map[string][]float64
+}
+
+func NewDataStore() dataStore {
+	return dataStore{data: make(map[string][]float64)}
+}
+
+func (ds dataStore) ResetKey(key string) {
+	ds.Lock()
+	defer ds.Unlock()
+	ds.data[key] = make([]float64, 0)
+}
+
+func (ds dataStore) Get(key string) []float64 {
+	ds.RLock()
+	defer ds.RUnlock()
+	return ds.data[key]
+}
+
+func (ds dataStore) Add(key string, value float64) {
+	ds.data[key] = append(ds.data[key], value)
+}
+
 // GenericChannelAspect, exported fields are used to store json
 // fields. All fields are measured in nanoseconds.
 type GenericChannelAspect struct {
+	gcdLock   sync.RWMutex
 	name      string
-	tempStore map[string][]float64
-	Gcd       map[string]*GenericChannelData
+	tempStore dataStore
+	Gcd       map[string]GenericChannelData
 }
 
 // GenericChannelData
@@ -36,8 +65,8 @@ type GenericChannelData struct {
 // object.
 func NewGenericChannelAspect(name string) *GenericChannelAspect {
 	gc := &GenericChannelAspect{name: name}
-	gc.tempStore = make(map[string][]float64, 0)
-	gc.Gcd = make(map[string]*GenericChannelData, 0)
+	gc.tempStore = NewDataStore()
+	gc.Gcd = make(map[string]GenericChannelData, 0)
 	return gc
 }
 
@@ -53,22 +82,42 @@ func (gc *GenericChannelAspect) StartTimer(d time.Duration) {
 	}()
 }
 
-// TODO: change name and signature
+// SetupGenericChannelAspect returns an unbuffered channel for type
+// DataChannel, such that you can send arbitrary key (string) value
+// (float64) pairs to it.
 func (gc *GenericChannelAspect) SetupGenericChannelAspect() chan DataChannel {
 	_gc := gc // save gc in closure
-	_ch := make(chan DataChannel, 1)
-	go func(gc *GenericChannelAspect, ch chan DataChannel) {
+	ch := make(chan DataChannel)
+	go func() {
 		for {
-			gc.add(<-ch)
+			_gc.add(<-ch)
 		}
-	}(_gc, _ch)
-	return _ch
+	}()
+	return ch
 }
 
-// GetStats to fulfill aspects.Aspect interface, it returns the data
-// that will be served as JSON.
+// GetStats to fulfill aspects.Aspect interface, it returns a copy of
+// the calculated data set that will be served as JSON.
 func (gc *GenericChannelAspect) GetStats() interface{} {
-	return gc.Gcd
+	gc.gcdLock.RLock()
+	defer gc.gcdLock.RUnlock()
+
+	var mod bytes.Buffer
+	enc := gob.NewEncoder(&mod)
+	dec := gob.NewDecoder(&mod)
+
+	err := enc.Encode(gc.Gcd)
+	if err != nil {
+		return err
+	}
+
+	var cpy map[string]GenericChannelData
+	err = dec.Decode(&cpy)
+	if err != nil {
+		return err
+	}
+
+	return cpy
 }
 
 // Name to fulfill aspects.Aspect interface, it will return the name
@@ -84,25 +133,33 @@ func (gc *GenericChannelAspect) InRoot() bool {
 }
 
 func (gc *GenericChannelAspect) add(dc DataChannel) {
-	gc.tempStore[dc.Name] = append(gc.tempStore[dc.Name], dc.Value)
+	gc.tempStore.Lock()
+	defer gc.tempStore.Unlock()
+
+	gc.tempStore.Add(dc.Name, dc.Value)
 }
 
 func (gc *GenericChannelAspect) calculate() {
-	for name, list := range gc.tempStore {
+	gc.tempStore.Lock()
+	defer gc.tempStore.Unlock()
+	for name, list := range gc.tempStore.data {
 		sortedSlice := list[:]
-		gc.tempStore[name] = make([]float64, 0)
+		gc.tempStore.data[name] = make([]float64, 0)
 		l := len(sortedSlice)
 
 		// if tempStore is empty have to set everything to 0 and update timestamp
 		if l < 1 {
-			gc.Gcd[name] = &GenericChannelData{Timestamp: time.Now()}
+			gc.gcdLock.Lock()
+			gc.Gcd[name] = GenericChannelData{Timestamp: time.Now()}
+			gc.gcdLock.Unlock()
 			continue
 		}
 
 		sort.Float64s(sortedSlice)
 		m := mean(sortedSlice, l)
 
-		gc.Gcd[name] = &GenericChannelData{
+		gc.gcdLock.Lock()
+		gc.Gcd[name] = GenericChannelData{
 			Timestamp: time.Now(),
 			Min:       sortedSlice[0],
 			Max:       sortedSlice[l-1],
@@ -112,5 +169,6 @@ func (gc *GenericChannelAspect) calculate() {
 			P95:       p95(sortedSlice, l),
 			P99:       p99(sortedSlice, l),
 		}
+		gc.gcdLock.Unlock()
 	}
 }
