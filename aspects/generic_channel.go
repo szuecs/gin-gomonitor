@@ -51,6 +51,7 @@ type GenericChannelAspect struct {
 
 // GenericChannelData
 type GenericChannelData struct {
+	Count     int       `json:"count"`
 	Min       float64   `json:"min"`
 	Max       float64   `json:"max"`
 	Mean      float64   `json:"mean"`
@@ -161,6 +162,7 @@ func (gc *GenericChannelAspect) calculate() {
 		gc.gcdLock.Lock()
 		gc.Gcd[name] = GenericChannelData{
 			Timestamp: time.Now(),
+			Count:     l,
 			Min:       sortedSlice[0],
 			Max:       sortedSlice[l-1],
 			Mean:      m,

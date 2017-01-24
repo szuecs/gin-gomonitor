@@ -11,6 +11,7 @@ import (
 // fields. All fields are measured in nanoseconds.
 type RequestTimeAspect struct {
 	lastMinuteRequestTimes []float64
+	Count                  int       `json:"count"`
 	Min                    float64   `json:"min"`
 	Max                    float64   `json:"max"`
 	Mean                   float64   `json:"mean"`
@@ -85,6 +86,7 @@ func (rt *RequestTimeAspect) calculate() {
 	sort.Float64s(sortedSlice)
 
 	rt.Timestamp = time.Now()
+	rt.Count = l
 	rt.Min = sortedSlice[0]
 	rt.Max = sortedSlice[l-1]
 	rt.Mean = mean(sortedSlice, l)
