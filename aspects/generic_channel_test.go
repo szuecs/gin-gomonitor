@@ -41,6 +41,18 @@ func TestGenericChannelAspect(t *testing.T) {
 	if assert.NotNil(t, gca, "Return of NewGenericChannelAspect() should not be nil") {
 		t.Logf("Should be a pointer to GenericChannelAspect %s", checkMark)
 	}
+	if assert.Equal(t, gca.name, gca.Name(), "gca.Name() does not work, expect %s but got %s %s",
+		gca.name, gca.Name(), ballotX) {
+		t.Logf("Name() works,  %s", checkMark)
+	}
+	if assert.Equal(t, false, gca.InRoot(), "gca.InRoot() does not work, expect %s but got %s %s",
+		false, gca.InRoot(), ballotX) {
+		t.Logf("InRoot() works,  %s", checkMark)
+	}
+	if assert.NotNil(t, gca.GetStats(), "Return of GetStats() should not be nil %s",
+		ballotX) {
+		t.Logf("GetStats() works,  %s", checkMark)
+	}
 
 	l := 100
 	for i := 0; i <= l; i++ {
@@ -82,7 +94,6 @@ func TestGenericChannelAspect(t *testing.T) {
 		99.0, gcd.P99, ballotX) {
 		t.Logf("P99 works, expected %v %s", gcd.P99, checkMark)
 	}
-
 	if assert.InEpsilon(t, 29.3, gcd.Stdev, epsilon, "Stdev does not work, expect %d but got %d %s",
 		29.3, gcd.Stdev, ballotX) {
 		t.Logf("Should be 29.01 %s", checkMark)
