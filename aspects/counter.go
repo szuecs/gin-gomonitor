@@ -55,11 +55,7 @@ func (ca *CounterAspect) StartTimer(d time.Duration) {
 		for {
 			select {
 			case tup := <-ca.inc:
-
-				ca.internalRequestsSum++
-				ca.internalRequests[tup.path]++
-				ca.internalRequestCodes[tup.code]++
-
+				ca.increment(tup)
 			case <-timer:
 				ca.reset()
 			}
@@ -83,6 +79,12 @@ func (ca *CounterAspect) Name() string {
 // put the JSON object into the monitoring endpoint.
 func (ca *CounterAspect) InRoot() bool {
 	return false
+}
+
+func (ca *CounterAspect) increment(tup tuple) {
+	ca.internalRequestsSum++
+	ca.internalRequests[tup.path]++
+	ca.internalRequestCodes[tup.code]++
 }
 
 func (ca *CounterAspect) reset() {
