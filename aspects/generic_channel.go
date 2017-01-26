@@ -87,11 +87,11 @@ func (gc *GenericChannelAspect) StartTimer(d time.Duration) {
 // DataChannel, such that you can send arbitrary key (string) value
 // (float64) pairs to it.
 func (gc *GenericChannelAspect) SetupGenericChannelAspect() chan DataChannel {
-	_gc := gc // save gc in closure
+	lgc := gc // save gc in closure
 	ch := make(chan DataChannel)
 	go func() {
 		for {
-			_gc.add(<-ch)
+			lgc.add(<-ch)
 		}
 	}()
 	return ch
