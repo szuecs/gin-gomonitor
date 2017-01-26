@@ -2,7 +2,6 @@ package ginmon
 
 import (
 	"net/http"
-	"net/http/httptest"
 	"net/url"
 	"testing"
 
@@ -106,30 +105,4 @@ func Test_InRoot(t *testing.T) {
 		t.Logf("Expect %v and got %v %s",
 			expect, ca.InRoot(), checkMark)
 	}
-}
-
-// func Test_CounterHandler(t *testing.T) {
-// 	gin.SetMode(TestMode)
-// 	router := gin.New()
-// 	ca := NewCounterAspect()
-// 	expect := 1
-// 	tup := tuple{
-// 		path: testpath,
-// 		code: 404,
-// 	}
-// 	ca.increment(tup)
-// 	ca.reset()
-
-// 	router.Use(CounterHandler(ca))
-// 	tryRequest(router, "GET", "/")
-// 	if assert.Equal(t, expect, ca.RequestsSum, "Incrementation of counter does not work, expect %d but got %d %s", expect, ca.RequestsSum, ballotX) {
-// 		t.Logf("CounterHandler works, expect %d and got %d %s", expect, ca.RequestsSum, checkMark)
-// 	}
-// }
-
-func tryRequest(r http.Handler, method, path string) *httptest.ResponseRecorder {
-	req, _ := http.NewRequest(method, path, nil)
-	w := httptest.NewRecorder()
-	r.ServeHTTP(w, req)
-	return w
 }
