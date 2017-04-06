@@ -101,7 +101,7 @@ Next, initialize the CounterAspect defined by Gin-Gomonitor and your own CustomA
 Finally, register the middleware to expose all metrics on TCP port 9000:
 
 ```go
-    router.Use(gomonitor.Metrics(9000, asps))
+    gomonitor.Start(9000, asps)
 ```
 
 #### Testing
@@ -201,7 +201,7 @@ func main() {
         router.Use(ginmon.CounterHandler(counterAspect))
 
 	// start metrics endpoint
-	router.Use(gomonitor.Metrics(9000, asps))
+	gomonitor.Start(9000, asps)
 	// last middleware
 	router.Use(gin.Recovery())
 
@@ -265,7 +265,7 @@ func main() {
 	// test: curl http://localhost:9000/RequestTime
 	router.Use(ginmon.RequestTimeHandler(requestAspect))
 	// start metrics endpoint
-	router.Use(gomonitor.Metrics(9000, asps))
+	gomonitor.Start(9000, asps)
 	// last middleware
 	router.Use(gin.Recovery())
 
@@ -320,7 +320,7 @@ func main() {
         // register GenericChannelAspect middleware
 	// test: curl http://localhost:9000/generic
 	// start metrics endpoint
-	router.Use(gomonitor.Metrics(9000, asps))
+	gomonitor.Start(9000, asps)
 	// catch panics as last middleware
 	router.Use(gin.Recovery())
 

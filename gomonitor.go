@@ -25,7 +25,7 @@
 //    	// curl http://localhost:9000/Counter
 //    	router.Use(ginmon.CounterHandler(counterAspect))
 //    	// curl http://localhost:9000/
-//    	router.Use(gomonitor.Metrics(9000, asps))
+//    	gomonitor.Start(9000, asps)
 //    	// last middleware
 //    	router.Use(gin.Recovery())
 //
@@ -42,14 +42,13 @@ package gomonitor
 import (
 	"fmt"
 
-	"github.com/gin-gonic/gin"
 	mon "gopkg.in/mcuadros/go-monitor.v1"
 	"gopkg.in/mcuadros/go-monitor.v1/aspects"
 )
 
-// Metrics function exposes metrics of
+// Start function exposes metrics of
 // https://github.com/mcuadros/go-monitor package of your
-// https://github.com/gin-gonic/gin based webapp. Metrics() get a
+// https://github.com/gin-gonic/gin based webapp. Start() get a
 // port number as parameter to expose monitoring data to and a slice
 // of aspects.Aspect defined by the user.
 //
@@ -60,16 +59,14 @@ import (
 //    	// curl http://localhost:9000/Counter
 //    	router.Use(ginmon.CounterHandler(counterAspect))
 //    	// curl http://localhost:9000/
-//    	router.Use(gomonitor.Metrics(9000, asps))
+//    	gomonitor.Start(9000, asps)
 //    	// last middleware
 //    	router.Use(gin.Recovery())
-func Metrics(port int, asps []aspects.Aspect) gin.HandlerFunc {
+func Start(port int, asps []aspects.Aspect) {
 	var monitor *mon.Monitor = mon.NewMonitor(fmt.Sprintf(":%d", port))
 	for _, aspect := range asps {
 		monitor.AddAspect(aspect)
 	}
 
 	go monitor.Start()
-	return func(c *gin.Context) {
-	}
 }

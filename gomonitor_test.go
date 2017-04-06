@@ -4,5 +4,5 @@ import (
 	"testing"
 )
 
-func Test_Metrics(t *testing.T) {
+func Test_Start(t *testing.T) {
 }

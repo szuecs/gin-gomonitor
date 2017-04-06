@@ -30,7 +30,7 @@ func main() {
 	// curl http://localhost:9000/RequestTime
 	router.Use(ginmon.RequestTimeHandler(requestAspect))
 	// curl http://localhost:9000/
-	router.Use(gomonitor.Metrics(9000, asps))
+	gomonitor.Start(9000, asps)
 	// last middleware
 	router.Use(gin.Recovery())
 
