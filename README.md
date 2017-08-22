@@ -1,8 +1,8 @@
 # Gin-Gomonitor
 
-[![Build Status](https://travis-ci.org/zalando/gin-gomonitor.svg?branch=master)](https://travis-ci.org/zalando/gin-gomonitor)
-[![Coverage Status](https://coveralls.io/repos/zalando/gin-gomonitor/badge.svg?branch=master&service=github)](https://coveralls.io/github/zalando/gin-gomonitor?branch=master)
-[![Go Report Card](https://goreportcard.com/badge/zalando/gin-gomonitor)](https://goreportcard.com/report/zalando/gin-gomonitor)
+[![Build Status](https://travis-ci.org/szuecs/gin-gomonitor.svg?branch=master)](https://travis-ci.org/szuecs/gin-gomonitor)
+[![Coverage Status](https://coveralls.io/repos/szuecs/gin-gomonitor/badge.svg?branch=master&service=github)](https://coveralls.io/github/szuecs/gin-gomonitor?branch=master)
+[![Go Report Card](https://goreportcard.com/badge/szuecs/gin-gomonitor)](https://goreportcard.com/report/szuecs/gin-gomonitor)
 
 Gin-Gomonitor is made specially for [Gin Framework](https://github.com/gin-gonic/gin) users who also want to use [Go-Monitor](https://github.com/mcuadros/go-monitor). It was created by Go developers who needed Gin middleware for exposing metrics with Go-Monitor, which provides a simple and extensible way to build monitorizable long-term execution processes or daemons via HTTP. Gin-Gomonitor supports customized aspects and implements a simple counter aspect within the
 package ginmon.
@@ -22,7 +22,7 @@ wanted to take fuller advantage of
 devs do likewise.
 
 We implemented the following custom
-[Aspects](https://github.com/zalando/gin-gomonitor/tree/master/aspects):
+[Aspects](https://github.com/szuecs/gin-gomonitor/tree/master/aspects):
 
 CounterAspect implements a counter for request per time.Duration,
 counting the sum of all and for each path independent counters.
@@ -35,7 +35,7 @@ pairs to this monitoring facility. This aspect will calculate min,
 max, mean, stdev, p90, p95, p99 for all values of a key send to the
 channel in a given time frame. It can be used without Gin if you like.
 
-See also our [full example](https://github.com/zalando/gin-gomonitor/blob/master/example/main.go).
+See also our [full example](https://github.com/szuecs/gin-gomonitor/blob/master/example/main.go).
 
 #### How Go-Monitor Is Different from Other Metric Libraries
 
@@ -55,11 +55,11 @@ Gin-Gomonitor uses the following [Go](https://golang.org/) packages as dependenc
 Assuming you've installed [Go](https://golang.org/dl) and
 [Gin](https://github.com/gin-gonic/gin), run this:
 
-    % go get -u github.com/zalando/gin-gomonitor
+    % go get -u github.com/szuecs/gin-gomonitor
 
 ## Usage
 
-[This example](https://github.com/zalando/gin-gomonitor/blob/master/example/main.go) shows you how to use Gin-Gomonitor. To try it out, use:
+[This example](https://github.com/szuecs/gin-gomonitor/blob/master/example/main.go) shows you how to use Gin-Gomonitor. To try it out, use:
 
       % go run example/main.go
 

@@ -13,8 +13,8 @@
 //    	"net/http"
 //
 //    	"github.com/gin-gonic/gin"
-//    	"github.com/zalando/gin-gomonitor"
-//	"github.com/zalando/gin-gomonitor/aspects"
+//    	"github.com/szuecs/gin-gomonitor"
+//	"github.com/szuecs/gin-gomonitor/aspects"
 //    	"gopkg.in/mcuadros/go-monitor.v1/aspects"
 //    )
 //
