@@ -66,7 +66,8 @@ func TestRequestTimer_GetStats(t *testing.T) {
 
 func (rt *RequestTimeAspect) createValues(n int) {
 	for i := 0; i < n; i++ {
-		rt.add(float64(i))
+		//rt.add(float64(i)) // 3x slower then below
+		rt.add(1.0)
 	}
 }
 
