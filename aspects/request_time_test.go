@@ -112,52 +112,89 @@ func BenchmarkRequestTimerCalculate360000(b *testing.B) {
 	}
 }
 
-func (rt *RequestTimeAspect) runBenchMemcopy(i int) {
+func (rt *RequestTimeAspect) runSliceAppendAndMemcopy(i int) {
 	rt.createValues(i)
 	a := rt.lastMinuteRequestTimes[:]
 	rt.lastMinuteRequestTimes = make([]float64, 0)
 	_ = a[5]
 }
 
-func BenchmarkMemcopy100(b *testing.B) {
+func BenchmarkSliceAppendAndMemcopy100(b *testing.B) {
 	rt := NewRequestTimeAspect()
 	for n := 0; n < b.N; n++ {
-		rt.runBenchMemcopy(100)
+		rt.runSliceAppendAndMemcopy(100)
 	}
 }
 
-func BenchmarkMemcopy1000(b *testing.B) {
+func BenchmarkSliceAppendAndMemcopy1000(b *testing.B) {
 	rt := NewRequestTimeAspect()
 	for n := 0; n < b.N; n++ {
-		rt.runBenchMemcopy(1000)
+		rt.runSliceAppendAndMemcopy(1000)
 	}
 }
 
-func BenchmarkMemcopy10000(b *testing.B) {
+func BenchmarkSliceAppendAndMemcopy10000(b *testing.B) {
 	rt := NewRequestTimeAspect()
 	for n := 0; n < b.N; n++ {
-		rt.runBenchMemcopy(10000)
+		rt.runSliceAppendAndMemcopy(10000)
 	}
 }
 
-func BenchmarkMemcopy100000(b *testing.B) {
+func BenchmarkSliceAppendAndMemcopy100000(b *testing.B) {
 	rt := NewRequestTimeAspect()
 	for n := 0; n < b.N; n++ {
-		rt.runBenchMemcopy(100000)
+		rt.runSliceAppendAndMemcopy(100000)
 	}
 }
 
-func BenchmarkMemcopy1000000(b *testing.B) {
+func BenchmarkSliceAppendAndMemcopy1000000(b *testing.B) {
 	rt := NewRequestTimeAspect()
 	for n := 0; n < b.N; n++ {
-		rt.runBenchMemcopy(1000000)
+		rt.runSliceAppendAndMemcopy(1000000)
 	}
 }
 
-func BenchmarkMemcopy360000(b *testing.B) {
+func BenchmarkSliceAppendAndMemcopy360000(b *testing.B) {
 	rt := NewRequestTimeAspect()
 	for n := 0; n < b.N; n++ {
-		rt.runBenchMemcopy(360000)
+		rt.runSliceAppendAndMemcopy(360000)
+	}
+}
+
+func runSliceAppend(n int) {
+	a := []int{}
+	for i := 0; i < n; i++ {
+		a = append(a, i)
+	}
+}
+
+func BenchmarkSliceAppend100(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		runSliceAppend(100)
+	}
+}
+
+func BenchmarkSliceAppend1000(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		runSliceAppend(1000)
+	}
+}
+
+func BenchmarkSliceAppend10000(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		runSliceAppend(10000)
+	}
+}
+
+func BenchmarkSliceAppend100000(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		runSliceAppend(100000)
+	}
+}
+
+func BenchmarkSliceAppend1000000(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		runSliceAppend(1000000)
 	}
 }
 
