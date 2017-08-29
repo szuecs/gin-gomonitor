@@ -64,6 +64,103 @@ func TestRequestTimer_GetStats(t *testing.T) {
 	}
 }
 
+func (rt *RequestTimeAspect) createValues(n int) {
+	for i := 0; i < n; i++ {
+		rt.add(float64(i))
+	}
+}
+
+func (rt *RequestTimeAspect) runBenchRequestTimerCalculate(i int) {
+	rt.createValues(i)
+	rt.calculate()
+	stat := rt.GetStats().(*RequestTimeAspect)
+	_ = stat.P95
+}
+
+func BenchmarkRequestTimerCalculate100(b *testing.B) {
+	rt := NewRequestTimeAspect()
+	for n := 0; n < b.N; n++ {
+		rt.runBenchRequestTimerCalculate(100)
+	}
+}
+
+func BenchmarkRequestTimerCalculate1000(b *testing.B) {
+	rt := NewRequestTimeAspect()
+	for n := 0; n < b.N; n++ {
+		rt.runBenchRequestTimerCalculate(1000)
+	}
+}
+
+func BenchmarkRequestTimerCalculate10000(b *testing.B) {
+	rt := NewRequestTimeAspect()
+	for n := 0; n < b.N; n++ {
+		rt.runBenchRequestTimerCalculate(10000)
+	}
+}
+
+func BenchmarkRequestTimerCalculate100000(b *testing.B) {
+	rt := NewRequestTimeAspect()
+	for n := 0; n < b.N; n++ {
+		rt.runBenchRequestTimerCalculate(100000)
+	}
+}
+
+func BenchmarkRequestTimerCalculate360000(b *testing.B) {
+	rt := NewRequestTimeAspect()
+	for n := 0; n < b.N; n++ {
+		rt.runBenchRequestTimerCalculate(360000)
+	}
+}
+
+func (rt *RequestTimeAspect) runBenchMemcopy(i int) {
+	rt.createValues(i)
+	a := rt.lastMinuteRequestTimes[:]
+	rt.lastMinuteRequestTimes = make([]float64, 0)
+	_ = a[5]
+}
+
+func BenchmarkMemcopy100(b *testing.B) {
+	rt := NewRequestTimeAspect()
+	for n := 0; n < b.N; n++ {
+		rt.runBenchMemcopy(100)
+	}
+}
+
+func BenchmarkMemcopy1000(b *testing.B) {
+	rt := NewRequestTimeAspect()
+	for n := 0; n < b.N; n++ {
+		rt.runBenchMemcopy(1000)
+	}
+}
+
+func BenchmarkMemcopy10000(b *testing.B) {
+	rt := NewRequestTimeAspect()
+	for n := 0; n < b.N; n++ {
+		rt.runBenchMemcopy(10000)
+	}
+}
+
+func BenchmarkMemcopy100000(b *testing.B) {
+	rt := NewRequestTimeAspect()
+	for n := 0; n < b.N; n++ {
+		rt.runBenchMemcopy(100000)
+	}
+}
+
+func BenchmarkMemcopy1000000(b *testing.B) {
+	rt := NewRequestTimeAspect()
+	for n := 0; n < b.N; n++ {
+		rt.runBenchMemcopy(1000000)
+	}
+}
+
+func BenchmarkMemcopy360000(b *testing.B) {
+	rt := NewRequestTimeAspect()
+	for n := 0; n < b.N; n++ {
+		rt.runBenchMemcopy(360000)
+	}
+}
+
 func TestRequestTimer_Name(t *testing.T) {
 	rt := newTestNewRequestTimeAspect(1.0, 2.0, 3.0)
 	expect := "RequestTime"
